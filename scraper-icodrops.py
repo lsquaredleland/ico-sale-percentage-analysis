@@ -4,6 +4,7 @@ import re
 from selenium import webdriver
 import requests
 import csv
+import datetime
 
 url = 'https://icodrops.com/ico-stats/'
 
@@ -46,6 +47,7 @@ def ico_price(input):
 def subpage_data(url):
 	percent = '-'
 	goal = '-'
+	date = '-'
 	html = requests.get(url).content
 	soup = BeautifulSoup(html, "lxml")
 	try:
@@ -63,26 +65,35 @@ def subpage_data(url):
 	except:
 		goal = '-'
 
-	return [percent, goal]
+	try:
+		text = soup.find('div', class_='ico-right-col')
+		date = text.find('div', class_="sale-date").text.strip()
+	except:
+		date = '-'
 
-columns = ['name', 'percent_sold', 'url', 'raised', 'goal', 'ico_price', 'curr_price', 'usd_roi', 'eth_roi', 'btc_roi']
+	return [percent, goal, date]
+
+columns = ['name', 'percent_sold', 'url', 'date', 'raised', 'goal', 'ico_price', 'curr_price', 'usd_roi', 'eth_roi', 'btc_roi']
 data = []
 
 for ico in icos:
 	name = ico.find('h3').text.strip()
 	url = ico['href']
-	[percent_sold, goal] = subpage_data(url)
+	[percent_sold, goal, date] = subpage_data(url)
 	curr_price = clean(ico.find('div', class_='usd-price').findAll('div')[1].contents[0])
 	usd_roi = clean(ico.find('div', class_='st_r_usd').findAll('div')[1].contents[0])
 	eth_roi = clean(ico.find('div', class_='st_r_eth').findAll('div')[1].contents[0])
 	btc_roi = clean(ico.find('div', class_='st_r_btc').findAll('div')[1].contents[0])
 
-	line = [name, percent_sold, url, raised(ico), goal, ico_price(ico), curr_price, usd_roi, eth_roi, btc_roi]
+	line = [name, percent_sold, url, date, raised(ico), goal, ico_price(ico), curr_price, usd_roi, eth_roi, btc_roi]
 	print(line)
 	data.append(line)
 
 
-with open("ico_sale_data.csv", "w+") as my_csv:
+now = datetime.datetime.now()
+date = now.strftime("%Y_%m_%d")
+
+with open("ico_sale_data_" + date + ".csv", "w+") as my_csv:
 	csvWriter = csv.writer(my_csv, delimiter=',')
 	csvWriter.writerow(columns)
 	csvWriter.writerows(data)
