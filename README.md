@@ -12,3 +12,8 @@ The assumption now is that if an ICO is oversubscribed it will do better post ma
 
 Can't tell if the chart below is more telling.... Which seems to signal that if you raise less per percentage of total tokens, an ICO seems to perform better post ICO...
 ![ICO ROI vs USD Raise per Percent of Tokens Sold](imgs/ico_roi_vs_USD_raised_per_percent_sold.png)
+
+
+## TODO
+ * look at pricing data from coinmarketcap via this [URL](https://graphs2.coinmarketcap.com/currencies/bitcoin/), copying the pattern to get the max price of a particular ICO. Rather than using the current value from icodrops.
+ * Grab full list of currencies on CMC [here](https://s2.coinmarketcap.com/generated/search/quick_search.json)
